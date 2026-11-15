@@ -1,0 +1,35 @@
+digraph Architecture {
+    rankdir=TB; nodesep=0.5; ranksep=0.7; compound=true;
+    graph [fontname="DejaVu Sans", fontsize=14, labelloc=t, label="System Architecture - Agriculture Crop Management and Yield Analysis System", bgcolor="white"];
+    node  [shape=box, style="rounded,filled", fontname="DejaVu Sans", fontsize=11, width=2.6];
+    edge  [fontname="DejaVu Sans", fontsize=9, color="#444444"];
+
+    User [label="Farm Manager", fillcolor="#fff3cd", shape=box];
+    Analyst [label="Data Analyst", fillcolor="#fff3cd", shape=box];
+
+    subgraph cluster_java {
+        label="Java Application (Maven, Java 17)"; style="rounded"; color="#2a78d6"; fontsize=12;
+        UI [label="Presentation layer\nMain (console menu) + InputHelper\n(input handling and validation)", fillcolor="#e8f1fb"];
+        SVC [label="Service layer\nRecordService (business rules)\nReportService + Calculator\n(yield, cost, revenue, profit)", fillcolor="#e8f1fb"];
+        DAO [label="Data access layer\nFarmerDao, FarmDao, CropDao, CultivationDao,\nFertilizerInputDao, IrrigationDao, HarvestDao", fillcolor="#e6f4ea"];
+        JDBC [label="DatabaseManager\n(JDBC + SQLite driver)", fillcolor="#e6f4ea"];
+        UI -> SVC -> DAO -> JDBC;
+    }
+
+    subgraph cluster_db {
+        label="Database"; style="rounded"; color="#eb6834"; fontsize=12;
+        DB [label="SQLite database  agri.db\n7 tables + view v_cultivation_summary\n(schema.sql, sample_data.sql, queries.sql)", fillcolor="#fde7e0", shape=cylinder];
+    }
+
+    subgraph cluster_py {
+        label="Python Analytics (pandas, matplotlib)"; style="rounded"; color="#6250d6"; fontsize=12;
+        PY1 [label="analysis.py\n1. retrieve with sqlite3 + pandas.read_sql\n2. preprocess (clean, derive measures)", fillcolor="#ece9fb"];
+        PY2 [label="Visualization\n8 charts (PNG) + cleaned CSV", fillcolor="#ece9fb"];
+        PY1 -> PY2;
+    }
+
+    User -> UI [label="menu choices"];
+    JDBC -> DB [label="SQL"];
+    Analyst -> PY1 [label="runs"];
+    DB -> PY1 [label="SELECT"];
+}

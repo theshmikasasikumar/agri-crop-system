@@ -1,0 +1,42 @@
+digraph UseCase {
+    rankdir=LR; splines=true; nodesep=0.35; ranksep=1.6;
+    graph [fontname="DejaVu Sans", fontsize=14, labelloc=t, label="Use Case Diagram - Agriculture Crop Management and Yield Analysis System", bgcolor="white"];
+    node  [fontname="DejaVu Sans", fontsize=11];
+    edge  [fontname="DejaVu Sans", fontsize=9, arrowhead=none];
+
+    // actors
+    Manager [label="Farm Manager\n(Farmer / Agricultural\nOrganization)", shape=box, style="rounded,filled", fillcolor="#fff3cd", width=1.8];
+    Analyst [label="Data Analyst\n(Python)", shape=box, style="rounded,filled", fillcolor="#fff3cd", width=1.8];
+
+    subgraph cluster_system {
+        label="Agriculture Crop Management and Yield Analysis System"; style="rounded"; color="#555555"; fontsize=12;
+        node [shape=ellipse, style=filled, fillcolor="#e8f1fb", color="#2a78d6"];
+
+        UC1 [label="Manage Farmer Details"];
+        UC2 [label="Manage Farm Details"];
+        UC3 [label="Maintain Crop Information"];
+        UC4 [label="Register Cultivation Activity"];
+        UC5 [label="Track Fertilizer Inputs"];
+        UC6 [label="Record Irrigation Activity"];
+        UC7 [label="Record Harvest Details"];
+        UC8 [label="Calculate Productivity,\nCost and Profit"];
+        UC9 [label="Generate Reports"];
+        UC10 [label="Validate Input Data"];
+        UC11 [label="Analyze Crop Performance"];
+        UC12 [label="Retrieve and Preprocess\nData from Database"];
+        UC13 [label="Visualize Yield, Cost\nand Productivity"];
+    }
+
+    Manager -> UC1; Manager -> UC2; Manager -> UC3; Manager -> UC4; Manager -> UC5;
+    Manager -> UC6; Manager -> UC7; Manager -> UC8; Manager -> UC9;
+    Analyst -> UC11;
+
+    // include relationships
+    edge [style=dashed, arrowhead=vee];
+    UC1 -> UC10 [label="<<include>>"];
+    UC4 -> UC10 [label="<<include>>"];
+    UC7 -> UC10 [label="<<include>>"];
+    UC11 -> UC12 [label="<<include>>"];
+    UC11 -> UC13 [label="<<include>>"];
+    UC9 -> UC8 [label="<<include>>"];
+}

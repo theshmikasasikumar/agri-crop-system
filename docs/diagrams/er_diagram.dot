@@ -1,0 +1,69 @@
+digraph ER {
+    rankdir=LR; nodesep=0.5; ranksep=1.3; splines=true;
+    graph [fontname="DejaVu Sans", fontsize=14, labelloc=t, label="ER Diagram - Agriculture Crop Management and Yield Analysis System", bgcolor="white"];
+    node  [shape=plain, fontname="DejaVu Sans", fontsize=10];
+    edge  [fontname="DejaVu Sans", fontsize=10, color="#444444", dir=both, arrowtail=tee, arrowhead=crowodot];
+
+    Farmer [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#e8f1fb">
+        <tr><td bgcolor="#2a78d6"><font color="white"><b>Farmer</b></font></td></tr>
+        <tr><td align="left"><b>PK</b> farmer_id</td></tr>
+        <tr><td align="left">name</td></tr>
+        <tr><td align="left">contact_number (UNIQUE)</td></tr>
+        <tr><td align="left">address</td></tr></table>>];
+
+    Farm [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#e8f1fb">
+        <tr><td bgcolor="#2a78d6"><font color="white"><b>Farm</b></font></td></tr>
+        <tr><td align="left"><b>PK</b> farm_id</td></tr>
+        <tr><td align="left"><b>FK</b> farmer_id</td></tr>
+        <tr><td align="left">location</td></tr>
+        <tr><td align="left">total_area</td></tr></table>>];
+
+    Crop [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#e8f1fb">
+        <tr><td bgcolor="#2a78d6"><font color="white"><b>Crop</b></font></td></tr>
+        <tr><td align="left"><b>PK</b> crop_id</td></tr>
+        <tr><td align="left">crop_name (UNIQUE)</td></tr>
+        <tr><td align="left">crop_category</td></tr>
+        <tr><td align="left">duration_days</td></tr></table>>];
+
+    Cultivation [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#e8f1fb">
+        <tr><td bgcolor="#2a78d6"><font color="white"><b>Cultivation</b></font></td></tr>
+        <tr><td align="left"><b>PK</b> cultivation_id</td></tr>
+        <tr><td align="left"><b>FK</b> farm_id</td></tr>
+        <tr><td align="left"><b>FK</b> crop_id</td></tr>
+        <tr><td align="left">cultivation_date</td></tr>
+        <tr><td align="left">cultivated_area</td></tr>
+        <tr><td align="left">season</td></tr></table>>];
+
+    FertilizerInput [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#e8f1fb">
+        <tr><td bgcolor="#2a78d6"><font color="white"><b>FertilizerInput</b></font></td></tr>
+        <tr><td align="left"><b>PK</b> input_id</td></tr>
+        <tr><td align="left"><b>FK</b> cultivation_id</td></tr>
+        <tr><td align="left">fertilizer_type</td></tr>
+        <tr><td align="left">quantity_kg</td></tr>
+        <tr><td align="left">input_cost</td></tr>
+        <tr><td align="left">application_date</td></tr></table>>];
+
+    Irrigation [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#e8f1fb">
+        <tr><td bgcolor="#2a78d6"><font color="white"><b>Irrigation</b></font></td></tr>
+        <tr><td align="left"><b>PK</b> irrigation_id</td></tr>
+        <tr><td align="left"><b>FK</b> cultivation_id</td></tr>
+        <tr><td align="left">irrigation_date</td></tr>
+        <tr><td align="left">water_quantity_l</td></tr>
+        <tr><td align="left">irrigation_method</td></tr></table>>];
+
+    Harvest [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#e8f1fb">
+        <tr><td bgcolor="#2a78d6"><font color="white"><b>Harvest</b></font></td></tr>
+        <tr><td align="left"><b>PK</b> harvest_id</td></tr>
+        <tr><td align="left"><b>FK</b> cultivation_id (UNIQUE)</td></tr>
+        <tr><td align="left">harvest_date</td></tr>
+        <tr><td align="left">quantity_kg</td></tr>
+        <tr><td align="left">quality</td></tr>
+        <tr><td align="left">selling_price</td></tr></table>>];
+
+    Farmer -> Farm [label=" owns "];
+    Farm -> Cultivation [label=" hosts "];
+    Crop -> Cultivation [label=" grown in "];
+    Cultivation -> FertilizerInput [label=" uses "];
+    Cultivation -> Irrigation [label=" irrigated by "];
+    Cultivation -> Harvest [label=" yields ", arrowhead=teeodot];
+}

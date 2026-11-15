@@ -1,0 +1,39 @@
+1. Retrieving data from /tmp/claude-0/-home-claude/fcc412c1-00c3-5078-b4ee-697f3b3e6494/scratchpad/agri-crop-system/database/agri.db
+   27 cultivation rows, 80 fertilizer rows
+2. Preprocessing
+   rows loaded                        27
+   duplicate rows removed             0
+   invalid rows removed               0
+   ongoing (not harvested) excluded   2
+   harvested rows analysed            25
+   yield outliers flagged (kept)      0
+
+   Crop-wise summary
+           harvests  area_acres  yield_kg_per_acre  input_cost_per_acre  profit_per_acre
+crop_name                                                                               
+Cotton            2        19.0             581.70              3236.15         34104.84
+Groundnut         3        17.0            1053.75              1790.72         66162.04
+Maize             4        25.0            2472.13              2256.69         47940.47
+Ragi              3        16.0             989.56              1124.00         32043.51
+Rice              4        34.0            1945.52              1536.34         37946.09
+Sugarcane         1        12.0           31397.97              4258.67         83655.64
+Tomato            4        16.0           12242.08              4990.10        169176.09
+Wheat             4        21.0            1761.45              1346.00         43678.05
+
+3. Creating charts
+  saved charts/1_yield_per_acre_by_crop.png
+  saved charts/2_input_cost_per_acre_by_crop.png
+  saved charts/3_profit_per_acre_by_crop.png
+  saved charts/4_seasonal_profit.png
+  saved charts/5_farm_wise_profit.png
+  saved charts/6_input_cost_vs_yield.png
+  saved charts/7_water_vs_yield.png
+  saved charts/8_quality_by_category.png
+
+Key findings
+   - Most profitable crop per acre : Tomato (INR 169,176)
+   - Highest yield per acre        : Sugarcane
+   - Correlation fertilizer cost index vs yield index : 0.52
+   - Correlation water index vs yield index           : 0.21
+
+Done. Charts are in python-analysis/charts/

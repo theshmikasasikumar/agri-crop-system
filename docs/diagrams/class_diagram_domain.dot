@@ -1,0 +1,22 @@
+digraph Domain {
+    rankdir=TB; nodesep=0.6; ranksep=0.9;
+    graph [fontname="DejaVu Sans", fontsize=14, labelloc=t, label="Class Diagram - Domain Model (package com.agri.model)", bgcolor="white"];
+    node  [shape=record, fontname="DejaVu Sans", fontsize=10, style=filled, fillcolor="#e8f1fb", color="#2a78d6"];
+    edge  [fontname="DejaVu Sans", fontsize=10, arrowhead=none, color="#444444"];
+
+    Farmer [label="{Farmer|- farmerId : int\l- name : String\l- contactNumber : String\l- address : String\l|+ farmerId() : int\l+ name() : String\l+ contactNumber() : String\l+ address() : String\l}"];
+    Farm [label="{Farm|- farmId : int\l- farmerId : int\l- location : String\l- totalArea : double\l|+ farmId() : int\l+ farmerId() : int\l+ location() : String\l+ totalArea() : double\l}"];
+    Crop [label="{Crop|- cropId : int\l- cropName : String\l- category : String\l- durationDays : int\l|+ cropId() : int\l+ cropName() : String\l+ category() : String\l+ durationDays() : int\l}"];
+    Cultivation [label="{Cultivation|- cultivationId : int\l- farmId : int\l- cropId : int\l- cultivationDate : LocalDate\l- cultivatedArea : double\l- season : String\l|+ cultivationId() : int\l+ cultivationDate() : LocalDate\l+ cultivatedArea() : double\l+ season() : String\l}"];
+    FertilizerInput [label="{FertilizerInput|- inputId : int\l- cultivationId : int\l- fertilizerType : String\l- quantityKg : double\l- inputCost : double\l- applicationDate : LocalDate\l|+ fertilizerType() : String\l+ quantityKg() : double\l+ inputCost() : double\l}"];
+    Irrigation [label="{Irrigation|- irrigationId : int\l- cultivationId : int\l- irrigationDate : LocalDate\l- waterQuantityLitres : double\l- method : String\l|+ irrigationDate() : LocalDate\l+ waterQuantityLitres() : double\l+ method() : String\l}"];
+    Harvest [label="{Harvest|- harvestId : int\l- cultivationId : int\l- harvestDate : LocalDate\l- quantityKg : double\l- quality : String\l- sellingPrice : double\l|+ harvestDate() : LocalDate\l+ quantityKg() : double\l+ quality() : String\l+ sellingPrice() : double\l}"];
+
+    {rank=same; Farmer; Crop}
+    Farmer -> Farm [taillabel="1", headlabel="1..*", label="owns", labeldistance=2.2];
+    Farm -> Cultivation [taillabel="1", headlabel="0..*", label="hosts", labeldistance=2.2];
+    Crop -> Cultivation [taillabel="1", headlabel="0..*", label="grown in", labeldistance=2.2];
+    Cultivation -> FertilizerInput [taillabel="1", headlabel="0..*", label="uses", labeldistance=2.2];
+    Cultivation -> Irrigation [taillabel="1", headlabel="0..*", label="irrigated by", labeldistance=2.2];
+    Cultivation -> Harvest [taillabel="1", headlabel="0..1", label="yields", labeldistance=2.2];
+}

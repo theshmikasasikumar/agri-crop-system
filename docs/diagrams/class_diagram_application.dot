@@ -1,0 +1,43 @@
+digraph App {
+    rankdir=TB; nodesep=0.35; ranksep=0.8;
+    graph [fontname="DejaVu Sans", fontsize=14, labelloc=t, label="Class Diagram - Application Layers (Main, services, DAOs, utilities)", bgcolor="white"];
+    node  [shape=record, fontname="DejaVu Sans", fontsize=9, style=filled];
+    edge  [fontname="DejaVu Sans", fontsize=9, color="#444444", arrowhead=vee, style=dashed];
+
+    Main [fillcolor="#fff3cd", label="{Main|- in : InputHelper\l- records : RecordService\l- reports : ReportService\l|+ main(args) : void\l- printMenu() : void\l- handle(choice) : boolean\l- addFarmer() ... addHarvest() : void\l- viewRecords() : void\l- productivity() : void\l- reportsMenu() : void\l}"];
+
+    InputHelper [fillcolor="#f0f0f0", label="{InputHelper|- scanner : Scanner\l|+ readNonEmpty(prompt) : String\l+ readInt(prompt,min,max) : int\l+ readPositiveDouble(prompt) : double\l+ readDate(prompt) : LocalDate\l+ readPhone(prompt) : String\l+ readChoice(prompt,options) : String\l}"];
+
+    RecordService [fillcolor="#e8f1fb", label="{RecordService|+ addFarmer(...) : int\l+ addFarm(...) : int\l+ addCrop(...) : int\l+ registerCultivation(...) : int\l+ addFertilizerInput(...) : int\l+ addIrrigation(...) : int\l+ addHarvest(...) : int\l+ updateFarmerContact(...) : void\l+ deleteFarmer(id) : void\l}"];
+
+    ReportService [fillcolor="#e8f1fb", label="{ReportService|+ calculate(cultivationId) : ProductivityReport\l+ listTable(choice) : void\l+ cropWiseYield() : void\l+ farmWiseProduction() : void\l+ inputCosts() : void\l+ seasonalSummary() : void\l}"];
+
+    Calculator [fillcolor="#e8f1fb", label="{Calculator|+ yieldPerArea(qty,area) : double\l+ revenue(qty,price) : double\l+ profit(revenue,cost) : double\l+ round2(value) : double\l}"];
+
+    ProductivityReport [fillcolor="#e8f1fb", label="{ProductivityReport|cultivationId, cropName, season,\lareaAcres, totalInputCost,\ltotalWaterLitres, harvested,\lquantityKg, yieldPerAcre,\lrevenue, profit\l|+ toText() : String\l}"];
+
+    ValidationException [fillcolor="#f0f0f0", label="{ValidationException|+ ValidationException(message)\l}"];
+
+    FarmerDao [fillcolor="#e6f4ea", label="{FarmerDao|+ add(Farmer) : int\l+ exists(id) : boolean\l+ contactExists(no) : boolean\l+ updateContact(id,no) : boolean\l+ delete(id) : boolean\l}"];
+    FarmDao [fillcolor="#e6f4ea", label="{FarmDao|+ add(Farm) : int\l+ findById(id) : Optional\l}"];
+    CropDao [fillcolor="#e6f4ea", label="{CropDao|+ add(Crop) : int\l+ exists(id) : boolean\l+ nameExists(name) : boolean\l+ findNameById(id) : Optional\l}"];
+    CultivationDao [fillcolor="#e6f4ea", label="{CultivationDao|+ add(Cultivation) : int\l+ findById(id) : Optional\l}"];
+    FertilizerInputDao [fillcolor="#e6f4ea", label="{FertilizerInputDao|+ add(FertilizerInput) : int\l+ totalCost(cultivationId) : double\l}"];
+    IrrigationDao [fillcolor="#e6f4ea", label="{IrrigationDao|+ add(Irrigation) : int\l+ totalWater(cultivationId) : double\l}"];
+    HarvestDao [fillcolor="#e6f4ea", label="{HarvestDao|+ add(Harvest) : int\l+ findByCultivation(id) : Optional\l}"];
+
+    DatabaseManager [fillcolor="#fde7e0", label="{DatabaseManager|+ getConnection() : Connection\l+ initializeSchema() : void\l+ loadSampleData() : void\l+ runScript(path) : void\l+ insert(sql,params) : int\l+ update(sql,params) : int\l+ exists(sql,params) : boolean\l+ sum(sql,params) : double\l+ queryOne(sql,mapper,params) : Optional\l}"];
+    TablePrinter [fillcolor="#fde7e0", label="{TablePrinter|+ print(title, sql) : void\l}"];
+
+    Main -> InputHelper; Main -> RecordService; Main -> ReportService;
+    RecordService -> FarmerDao; RecordService -> FarmDao; RecordService -> CropDao;
+    RecordService -> CultivationDao; RecordService -> FertilizerInputDao;
+    RecordService -> IrrigationDao; RecordService -> HarvestDao;
+    RecordService -> ValidationException;
+    ReportService -> Calculator; ReportService -> ProductivityReport; ReportService -> TablePrinter;
+    ReportService -> CultivationDao; ReportService -> HarvestDao; ReportService -> FertilizerInputDao;
+    ReportService -> IrrigationDao; ReportService -> CropDao;
+    FarmerDao -> DatabaseManager; FarmDao -> DatabaseManager; CropDao -> DatabaseManager;
+    CultivationDao -> DatabaseManager; FertilizerInputDao -> DatabaseManager;
+    IrrigationDao -> DatabaseManager; HarvestDao -> DatabaseManager; TablePrinter -> DatabaseManager;
+}
