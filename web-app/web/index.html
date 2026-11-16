@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AgriFlow | Crop Management</title><link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">✳</div><div><strong>AgriFlow</strong><small>FARM MANAGEMENT</small></div></div>
+    <div class="side-label">WORKSPACE</div>
+    <nav id="navigation">
+      <button class="nav-item active" data-page="dashboard"><span>⌂</span> Overview</button>
+      <div class="side-label nav-group-label">MANAGE</div>
+      <button class="nav-item" data-page="farmers"><span>♙</span> Farmers</button>
+      <button class="nav-item" data-page="farms"><span>▦</span> Farms</button>
+      <button class="nav-item" data-page="crops"><span>♧</span> Crops</button>
+      <button class="nav-item" data-page="cultivations"><span>▤</span> Cultivations</button>
+      <button class="nav-item" data-page="fertilizers"><span>◈</span> Fertilizer inputs</button>
+      <button class="nav-item" data-page="irrigation"><span>⌁</span> Irrigation</button>
+      <button class="nav-item" data-page="harvests"><span>▧</span> Harvests</button>
+      <div class="side-label nav-group-label">INSIGHTS</div>
+      <button class="nav-item" data-page="reports"><span>▥</span> Reports</button>
+    </nav>
+    <div class="sidebar-bottom"><div class="status-dot"></div><div><b>Local database</b><small>SQLite connection</small></div><span class="online">●</span></div>
+  </aside>
+  <main class="main-area">
+    <header class="topbar"><div><div class="eyebrow">AGRICULTURE MANAGEMENT</div><h1 id="page-title">Overview</h1></div><div class="top-actions"><span class="today" id="today"></span><div class="avatar">AF</div></div></header>
+    <section id="content" class="content"><div class="loading">Loading your farm data…</div></section>
+    <footer>AgriFlow <span>·</span> Agriculture Crop Management and Yield Analysis System</footer>
+  </main>
+</div>
+<div id="modal" class="modal hidden"><div class="modal-card"><div class="modal-head"><div><div class="eyebrow">NEW RECORD</div><h2 id="modal-title">Add record</h2></div><button class="icon-button" id="close-modal">×</button></div><form id="record-form"><div id="form-fields" class="form-grid"></div><div class="form-actions"><button type="button" class="btn secondary" id="cancel-modal">Cancel</button><button class="btn primary" type="submit">Save record <span>→</span></button></div></form></div></div>
+<div id="toast" class="toast"></div><script src="app.js"></script>
+</body></html>
