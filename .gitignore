@@ -1,16 +1,20 @@
-# build output
+
+# Java build output
 java-app/target/
+web-app/target/
 *.class
 
-# generated database (rebuild with: python database/setup_db.py)
+# SQLite database files (keep local; do not upload to GitHub)
 database/agri.db
+database/agri-backup.db
+*.db-journal
 
-# Python
+# Python generated files
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
 
-# IDE / OS
+# IDE / OS files
 .idea/
 .vscode/
 *.iml
