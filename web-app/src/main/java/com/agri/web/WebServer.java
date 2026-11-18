@@ -65,6 +65,7 @@ public final class WebServer {
 
         if ("OPTIONS".equalsIgnoreCase(ex.getRequestMethod())) {
             ex.sendResponseHeaders(204, -1);
+            ex.close();
             return;
         }
 
@@ -78,15 +79,19 @@ public final class WebServer {
             Object result;
 
             if (method.equals("GET") && path.equals("dashboard")) {
+
                 result = dashboard();
 
             } else if (method.equals("GET") && path.startsWith("reports/")) {
+
                 result = report(path.substring(8));
 
             } else if (method.equals("GET") && TABLES.containsKey(path)) {
+
                 result = query("SELECT * FROM " + TABLES.get(path));
 
             } else if (method.equals("POST")) {
+
                 result = create(path, body(ex));
 
             } else if (method.equals("PUT") && path.startsWith("farmers/")) {
@@ -117,6 +122,8 @@ public final class WebServer {
             send(ex, 200, result);
 
         } catch (Exception e) {
+
+            e.printStackTrace();
 
             int status =
                     (e instanceof ValidationException
@@ -237,18 +244,25 @@ public final class WebServer {
 
         Map<String, Object> m = new LinkedHashMap<>();
 
-        m.put("farmers", scalar("SELECT COUNT(*) FROM Farmer"));
+        m.put("farmers", scalar(
+                "SELECT COUNT(*) FROM Farmer"
+        ));
 
-        m.put("farms", scalar("SELECT COUNT(*) FROM Farm"));
+        m.put("farms", scalar(
+                "SELECT COUNT(*) FROM Farm"
+        ));
 
-        m.put("crops", scalar("SELECT COUNT(*) FROM Crop"));
+        m.put("crops", scalar(
+                "SELECT COUNT(*) FROM Crop"
+        ));
 
-        m.put("cultivations", scalar("SELECT COUNT(*) FROM Cultivation"));
+        m.put("cultivations", scalar(
+                "SELECT COUNT(*) FROM Cultivation"
+        ));
 
-        m.put(
-                "harvestKg",
-                scalar("SELECT COALESCE(SUM(quantity_kg), 0) FROM Harvest")
-        );
+        m.put("harvestKg", scalar(
+                "SELECT COALESCE(SUM(quantity_kg), 0) FROM Harvest"
+        ));
 
         m.put(
                 "estimatedProfit",
@@ -269,14 +283,14 @@ public final class WebServer {
                 )
         );
 
-        // PostgreSQL-compatible numeric casting for ROUND()
+        // SQLite and PostgreSQL compatible query
         m.put(
                 "cropYield",
                 query(
                         "SELECT crop_name AS crop, " +
                         "ROUND(" +
-                        "SUM(quantity_kg)::numeric / " +
-                        "NULLIF(SUM(cultivated_area)::numeric, 0), 2" +
+                        "CAST(SUM(quantity_kg) AS DECIMAL) / " +
+                        "NULLIF(CAST(SUM(cultivated_area) AS DECIMAL), 0), 2" +
                         ") AS yield " +
                         "FROM v_cultivation_summary " +
                         "WHERE quantity_kg IS NOT NULL " +
@@ -295,10 +309,10 @@ public final class WebServer {
             case "crop-yield" ->
                     "SELECT crop_name AS crop, " +
                     "COUNT(*) AS harvests, " +
-                    "ROUND(SUM(quantity_kg)::numeric, 1) AS total_kg, " +
+                    "ROUND(CAST(SUM(quantity_kg) AS DECIMAL), 1) AS total_kg, " +
                     "ROUND(" +
-                    "SUM(quantity_kg)::numeric / " +
-                    "NULLIF(SUM(cultivated_area)::numeric, 0), 2" +
+                    "CAST(SUM(quantity_kg) AS DECIMAL) / " +
+                    "NULLIF(CAST(SUM(cultivated_area) AS DECIMAL), 0), 2" +
                     ") AS yield_kg_per_acre " +
                     "FROM v_cultivation_summary " +
                     "WHERE quantity_kg IS NOT NULL " +
@@ -308,9 +322,9 @@ public final class WebServer {
             case "farm-production" ->
                     "SELECT farm_id, location, farmer_name AS farmer, " +
                     "COUNT(*) AS harvests, " +
-                    "ROUND(SUM(quantity_kg)::numeric, 1) " +
+                    "ROUND(CAST(SUM(quantity_kg) AS DECIMAL), 1) " +
                     "AS total_production_kg, " +
-                    "ROUND(SUM(revenue)::numeric, 2) AS total_revenue " +
+                    "ROUND(CAST(SUM(revenue) AS DECIMAL), 2) AS total_revenue " +
                     "FROM v_cultivation_summary " +
                     "WHERE quantity_kg IS NOT NULL " +
                     "GROUP BY farm_id, location, farmer_name " +
@@ -318,9 +332,9 @@ public final class WebServer {
 
             case "input-costs" ->
                     "SELECT cr.crop_name AS crop, " +
-                    "ROUND(SUM(fi.quantity_kg)::numeric, 1) " +
+                    "ROUND(CAST(SUM(fi.quantity_kg) AS DECIMAL), 1) " +
                     "AS fertilizer_kg, " +
-                    "ROUND(SUM(fi.input_cost)::numeric, 2) " +
+                    "ROUND(CAST(SUM(fi.input_cost) AS DECIMAL), 2) " +
                     "AS total_input_cost " +
                     "FROM FertilizerInput fi " +
                     "JOIN Cultivation c " +
@@ -331,11 +345,11 @@ public final class WebServer {
 
             case "seasonal" ->
                     "SELECT season, COUNT(*) AS harvests, " +
-                    "ROUND(SUM(quantity_kg)::numeric, 1) " +
+                    "ROUND(CAST(SUM(quantity_kg) AS DECIMAL), 1) " +
                     "AS total_harvest_kg, " +
-                    "ROUND(SUM(revenue)::numeric, 2) AS revenue, " +
-                    "ROUND(SUM(total_input_cost)::numeric, 2) AS input_cost, " +
-                    "ROUND(SUM(profit)::numeric, 2) AS profit " +
+                    "ROUND(CAST(SUM(revenue) AS DECIMAL), 2) AS revenue, " +
+                    "ROUND(CAST(SUM(total_input_cost) AS DECIMAL), 2) AS input_cost, " +
+                    "ROUND(CAST(SUM(profit) AS DECIMAL), 2) AS profit " +
                     "FROM v_cultivation_summary " +
                     "WHERE quantity_kg IS NOT NULL " +
                     "GROUP BY season " +
@@ -368,7 +382,11 @@ public final class WebServer {
                 Map<String, Object> row = new LinkedHashMap<>();
 
                 for (int k = 1; k <= n; k++) {
-                    row.put(md.getColumnLabel(k), rs.getObject(k));
+
+                    row.put(
+                            md.getColumnLabel(k),
+                            rs.getObject(k)
+                    );
                 }
 
                 rows.add(row);
@@ -461,11 +479,13 @@ public final class WebServer {
                 ? Path.of("web")
                 : Path.of("../web");
 
-        Path file = webDir.resolve(
+        Path normalizedWebDir = webDir.toAbsolutePath().normalize();
+
+        Path file = normalizedWebDir.resolve(
                 requested.substring(1)
         ).normalize();
 
-        if (!file.startsWith(webDir.normalize())
+        if (!file.startsWith(normalizedWebDir)
                 || !Files.isRegularFile(file)) {
 
             byte[] b = "Not found".getBytes(StandardCharsets.UTF_8);
